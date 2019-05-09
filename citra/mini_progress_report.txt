@@ -1,0 +1,76 @@
+Back in August we asked what you'd like to see the most, and now it's time to review how much progress we've made on everything you've voted for!
+Consider this a mini progress report for some of the things we've worked on since then.
+
+*paste results of poll here*
+
+#0 Pokemon X/Y Support
+We are just as happy as everyone else to finally have Pokemon X/Y support after so many years!
+We didn't include this one in the survey because at the time, we weren't sure even if the long time spent on developing the new audio core code would even fix the game.
+But all the work wwylele put in paid off, and you can read more about it in the full article here https://citra-emu.org/entry/accurate-audio-emulation/
+Also, not mentioned in the article, developers B3N30 and liushuyu have put in extra work on the HLE (fast) audio code to support Pokemon X/Y as well.
+At first, this new HLE code was using patented decoders that Citra legally could not distribute, making it painful for anyone that wanted to test it out.
+But with way more effort than anyone expected, we were able to add support for using the Windows Media Foundation framework, meaning we are now free to ship full Pokemon X/Y audio support without patent issues.
+
+#1: New 3DS Support
+In September, developer B3N30 started deep research into what exactly it would take to fully support N3DS games in Citra.
+Keep in mind that we want *full* support, which involved more than just hacking it on top of what Citra has today.
+From the hardware level, the N3DS added some additional memory and most importantly, added 2 new CPU cores, one that's dedicated to facial tracking and one that games can run code on.
+From the software level, the N3DS also has a few new N3DS specific services, mostly just to let the game know that its running on a N3DS.
+The challenge with adding N3DS support ends up almost completely within the scheduler, as increasing the emulated memory and CPU count is pretty straight forward.
+The real problems lie in the scheduler, where the current Citra implementation is written exclusively to run all 3DS code on one emulated core, something that works great for just about every game out there, as they run on one core on real 3DS hardware too!
+But N3DS games (and a small number of O3DS games) can intentionally run code on another core, which we don't have any support for at this time in Citra.
+After a few months of playing around with the code B3N30 had to take a break; it was too exhausting trying to reverse engineer how the 3DS schedules across multiple cores and recreate this in Citra at that time.
+It's an open secret in the 3DS reverse engineering scene that the 3DS scheduler is devilishly complex, so while we do plan to continue working on this, sometimes you just need to take a break and come back with a fresh perspective.
+
+#2: Splitable screens
+Developer jroweboy started work on splitting screens to multiple windows in Citra a good while ago, but ran into an isssue.
+This task touches many parts of the code that are very core to the emulator, and changing them proves to be a little challenging.
+But these technical challenges are easy for the devs to handle, the real challenge is developing a clear and usable UI/UX for the feature.
+Creating a multiwindow system where its intuitive enough for users to discover how it works, being powerful enough to cover everyone's preferred use cases, while still being simple enough to not cause massive maintenence burden, are very challenging design goals to meet!
+Most developers have a passion for working on complicated core emulator projects, but a good emulator should also be friendly and easy for people to use, and that's not something emulator developers usually have much experience in.
+If you have professional experience with UI/UX design, and want to contribute, let's talk and work together to make a good design for splitable screens!
+We do want splitable screens, but we won't settle with a bad design.
+
+#3 Controller Hotplug support
+In response to the survey, both jroweboy and B3N30 set out to change the controller handling code in Citra to support hotplugging.
+On the surface level, the bare minimum requirement is that one can unplug and replug in a controller and Citra will continue using it.
+In the end, Citra needed a little more restructuring to make this happen first.
+What followed was a full redesign of the controller backend to not only make controller hotplugging a reality, but also remove any global state from the controller backend so it could be ready for the day where Citra can finally run multiple games in the same instance and also be ready for save states.
+Always a good day when you add a new feature and leave the code in better shape than ever before!
+
+#4 Cheats
+At first, we were nervous about including cheats in the survey as we have a long history with cheat codes not working on Citra.
+But we added it anyway, since we were confident that if the people wanted cheat codes, we could finally resolve the long standing bug that kept cheat codes from working correctly.
+While developers B3N30 and jroweboy were busy with controller code, wwylele was working on cleaning up the core emulator code, trying to remove any global state.
+Along the way, wwylele found that the way memory is handled in Citra wasn't true to how the hardware works.
+What started with a routine cleanup removing global memory, ended with wwylele rewriting how almost all of the memory works in Citra!
+When users started testing out games to see what broke and what got fixed, they also took to rebasing makotech222's old cheat code support and tested to see if cheats were working again, and wouldn't you know they were.
+Word spread quickly that cheat codes were now working again, so after finishing controller hotplugging support, B3N30 worked on cheat code support in Citra.
+With the help of another developer zhaowenlan1779, the full cheat code support is now merged into Nightly and Canary.
+
+#5 Custom Texture Support
+As you've seen thus far, we've had our hands full between Pokemon X/Y, cheats, controller rewrite, and more.
+While we still want this feature, it's currently not in development, and we don't have any estimate for when someone will add it either.
+Stay tuned, as the open nature of the project means that this can change at a moments notice, either when a current Citra developer picks it up, or when a new contributor submits the code for review!
+
+#6 Amiibo support
+Developer fearlessTobi works tirelessly to try and keep the code thats shared between the sister project yuzu up-to-date with Citra.
+Recently, a yuzu developer ogniK added support for Amiibos to yuzu, and Tobi really wanted to know how much could just be copy pasted into Citra as well.
+It turns out, a fair bit, but not enough to get it working out of the box!
+With some extra research, Tobi was able to work out the differences with the help of ogniK and bring Amiibo support to Citra in October.
+
+#7 Microphone support
+jroweboy picked up this task in November, but ran into a roadblock right at the end.
+There was some bug in the code, but after reviewing it several times and debugging it, he just couldn't find out why games just weren't accepting the mic input.
+In the past week, Tobi took an interest in the code for mic, and decided to try and clean it up a bit.
+During his cleanup, he found that rewriting one part of the code actually fixed it!
+jroweboy took it from there, finishing it and submitting it for review.
+Microphone support is now in Canary builds for user testing, so try it out an let us know if it works for you!
+
+#8 Background images for the UI
+Not too surprising that this is not heavily requested, as it has very niche uses for streamers and YouTuber's who use Citra.
+Either way, if the demand for such a feature increases, we could take a little time to add it, but we have no plans to work on this as it's not a high priority.
+Accurate emulation, followed closely by making that accurate emulation fast, is always the #1 priority.
+
+There's been other exciting work from many different contributors, and we want to thank them all, but writing articles and blog posts is a very time consuming process, and we don't have anyone currently writing!
+If you would like to contribute to the project by joining the writing staff, reach out on the forums or on Discord and show us what you can do.
